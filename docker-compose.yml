@@ -10,25 +10,29 @@ services:
       - env
     volumes:
       - /dev/mytheme:/var/www/html/app/design/frontend/mytheme/default
+    networks:
+      - esnet
   db:
     image: mysql:5.6.23
     volumes:
       - db-data:/var/lib/mysql/data
     env_file:
       - env
+    networks:
+      - esnet
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     ports:
       - "8580:80"
     links:
       - db
-  es01:
+  es0:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
-    container_name: es01
+    container_name: es0
     environment:
-      - node.name=es01
-      - discovery.seed_hosts=es02
-      - cluster.initial_master_nodes=es01,es02
+      - node.name=es0
+      - discovery.seed_hosts=es1
+      - cluster.initial_master_nodes=es0,es1
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -37,18 +41,18 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - esdata01:/usr/share/elasticsearch/data
+      - ./data/es0:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
     networks:
       - esnet
-  es02:
+  es1:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
-    container_name: es02
+    container_name: es1
     environment:
-      - node.name=es02
-      - discovery.seed_hosts=es01
-      - cluster.initial_master_nodes=es01,es02
+      - node.name=es1
+      - discovery.seed_hosts=es0
+      - cluster.initial_master_nodes=es0,es1
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
@@ -57,16 +61,20 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - esdata02:/usr/share/elasticsearch/data
+      - ./data/es1:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.4.0
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - "5601:5601"
     networks:
       - esnet
 
 volumes:
   db-data:
-  esdata01:
-    driver: local
-  esdata02:
-    driver: local
 
 networks:
   esnet:
