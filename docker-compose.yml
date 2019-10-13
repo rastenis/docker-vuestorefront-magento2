@@ -1,7 +1,8 @@
 version: "3.0"
 services:
   web:
-    image: alexcheng/magento2
+    build:
+      context: ./docker-magento2
     ports:
       - "80:80"
     links:
@@ -26,6 +27,8 @@ services:
       - "8580:80"
     links:
       - db
+    networks:
+      - esnet
   es0:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
     container_name: es0
