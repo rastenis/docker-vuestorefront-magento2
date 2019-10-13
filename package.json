@@ -1,0 +1,24 @@
+{
+  "name": "docker-vuestorefront-magento2",
+  "version": "0.0.1",
+  "description": "A composition that automatically sets up Magento 2 along with Elasticsearch and Kibana, and links up to vue-storefront.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Scharkee/docker-vuestorefront-magento2.git"
+  },
+  "keywords": [
+    "vue",
+    "vue-storefront",
+    "magento",
+    "magento2",
+    "elasticsearch",
+    "kibana",
+    "docker"
+  ],
+  "author": "Matas Rastenis",
+  "license": "ISC"
+}
