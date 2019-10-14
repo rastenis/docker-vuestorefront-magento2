@@ -29,52 +29,59 @@ services:
       - db
     networks:
       - esnet
-  es0:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
-    container_name: es0
+  storefront:
+    build:
+      context: ./vue-storefront
+      dockerfile: docker/vue-storefront/Dockerfile
+    env_file: ./vue-storefront/docker/vue-storefront/default.env
     environment:
-      - node.name=es0
-      - discovery.seed_hosts=es1
-      - cluster.initial_master_nodes=es0,es1
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+      VS_ENV: dev
+    network_mode: host
     volumes:
-      - ./data/es0:/usr/share/elasticsearch/data
+      - './babel.config.js:/var/www/babel.config.js'
+      - './config:/var/www/config'
+      - './core:/var/www/core'
+      - './ecosystem.json:/var/www/ecosystem.json'
+      - './.eslintignore:/var/www/.eslintignore'
+      - './.eslintrc.js:/var/www/.eslintrc.js'
+      - './lerna.json:/var/www/lerna.json'
+      - './tsconfig.json:/var/www/tsconfig.json'
+      - './tsconfig-build.json:/var/www/tsconfig-build.json'
+      - './shims.d.ts:/var/www/shims.d.ts'
+      - './package.json:/var/www/package.json'
+      - './src:/var/www/src'
+      - './var:/var/www/var'
+    tmpfs:
+      - /var/www/dist
     ports:
-      - 9200:9200
-    networks:
-      - esnet
+      - '3000:3000'
   es1:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
-    container_name: es1
-    environment:
-      - node.name=es1
-      - discovery.seed_hosts=es0
-      - cluster.initial_master_nodes=es0,es1
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+    container_name: elasticsearch
+    build: 
+      context: ./vue-storefront-api
+      dockerfile: docker/elasticsearch/Dockerfile
     volumes:
-      - ./data/es1:/usr/share/elasticsearch/data
-    networks:
-      - esnet
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.4.0
-    volumes:
-      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+      - ./vue-storefront-api/docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - ./vue-storefront-api/docker/elasticsearch/data:/usr/share/elasticsearch/data
     ports:
-      - "5601:5601"
-    networks:
-      - esnet
+      - '9200:9200'
+      - '9300:9300'
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+  kibana:
+    build: 
+      context: ./vue-storefront-api
+      dockerfile: docker/kibana/Dockerfile
+    volumes:
+      - ./vue-storefront-api/docker/kibana/config/:/usr/share/kibana/config:ro
+    ports:
+      - '5601:5601'
+    depends_on:
+      - es1
+  redis:
+    image: 'redis:4-alpine'
+    ports:
+      - '6379:6379'
 
 volumes:
   db-data:
