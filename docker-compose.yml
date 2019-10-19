@@ -14,9 +14,9 @@ services:
     networks:
       - esnet
   db:
-    image: mysql:5.6.23
+    image: mysql:5.7.28
     volumes:
-      - db-data:/var/lib/mysql/data
+      - db-data:/var/lib/mysql
     env_file:
       - env
     networks:
@@ -55,6 +55,32 @@ services:
       - /var/www/dist
     ports:
       - "3000:3000"
+  api:
+    # image: divante/vue-storefront-api:latest
+    build:
+      context: ./vue-storefront-api
+      dockerfile: docker/vue-storefront-api/Dockerfile
+    depends_on:
+      - es1
+      - redis
+    env_file: ./vue-storefront-api/docker/vue-storefront-api/default.env
+    environment:
+      VS_ENV: dev
+    volumes:
+      - './vue-storefront-api/config:/var/www/config'
+      - './vue-storefront-api/ecosystem.json:/var/www/ecosystem.json'
+      - './vue-storefront-api/migrations:/var/www/migrations'
+      - './vue-storefront-api/package.json:/var/www/package.json'
+      - './vue-storefront-api/babel.config.js:/var/www/babel.config.js'
+      - './vue-storefront-api/tsconfig.json:/var/www/tsconfig.json'
+      - './vue-storefront-api/nodemon.json:/var/www/nodemon.json'
+      - './vue-storefront-api/scripts:/var/www/scripts'
+      - './vue-storefront-api/src:/var/www/src'
+      - './vue-storefront-api/var:/var/www/var'
+    tmpfs:
+      - /var/www/dist
+    ports:
+      - '8080:8080'
   es1:
     container_name: elasticsearch
     build:
