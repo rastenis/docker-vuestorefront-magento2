@@ -18,15 +18,9 @@ do
 
 done
 
-# setting up restoriations
-sed -i '5i\yarn restore' vue-storefront-api/docker/vue-storefront-api/vue-storefront-api.sh 
-sed -i '6i\yarn migrate' vue-storefront-api/docker/vue-storefront-api/vue-storefront-api.sh 
-
-# preparing magento2 setup
-# ...
-
 # default configs
 cp ./vue-storefront/config/{default,local}.json
 
-# starting
-docker-compose up
+# building
+docker-compose build 
+docker-compose up 
