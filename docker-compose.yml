@@ -38,50 +38,50 @@ services:
       VS_ENV: dev
     network_mode: host
     volumes:
-      - './babel.config.js:/var/www/babel.config.js'
-      - './config:/var/www/config'
-      - './core:/var/www/core'
-      - './ecosystem.json:/var/www/ecosystem.json'
-      - './.eslintignore:/var/www/.eslintignore'
-      - './.eslintrc.js:/var/www/.eslintrc.js'
-      - './lerna.json:/var/www/lerna.json'
-      - './tsconfig.json:/var/www/tsconfig.json'
-      - './tsconfig-build.json:/var/www/tsconfig-build.json'
-      - './shims.d.ts:/var/www/shims.d.ts'
-      - './package.json:/var/www/package.json'
-      - './src:/var/www/src'
-      - './var:/var/www/var'
+      - "./vue-storefront/babel.config.js:/var/www/babel.config.js"
+      - "./vue-storefront/config:/var/www/config"
+      - "./vue-storefront/core:/var/www/core"
+      - "./vue-storefront/ecosystem.json:/var/www/ecosystem.json"
+      - "./vue-storefront/.eslintignore:/var/www/.eslintignore"
+      - "./vue-storefront/.eslintrc.js:/var/www/.eslintrc.js"
+      - "./vue-storefront/lerna.json:/var/www/lerna.json"
+      - "./vue-storefront/tsconfig.json:/var/www/tsconfig.json"
+      - "./vue-storefront/tsconfig-build.json:/var/www/tsconfig-build.json"
+      - "./vue-storefront/shims.d.ts:/var/www/shims.d.ts"
+      - "./vue-storefront/package.json:/var/www/package.json"
+      - "./vue-storefront/src:/var/www/src"
+      - "./vue-storefront/var:/var/www/var"
     tmpfs:
       - /var/www/dist
     ports:
-      - '3000:3000'
+      - "3000:3000"
   es1:
     container_name: elasticsearch
-    build: 
+    build:
       context: ./vue-storefront-api
       dockerfile: docker/elasticsearch/Dockerfile
     volumes:
       - ./vue-storefront-api/docker/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
       - ./vue-storefront-api/docker/elasticsearch/data:/usr/share/elasticsearch/data
     ports:
-      - '9200:9200'
-      - '9300:9300'
+      - "9200:9200"
+      - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xmx512m -Xms512m"
   kibana:
-    build: 
+    build:
       context: ./vue-storefront-api
       dockerfile: docker/kibana/Dockerfile
     volumes:
       - ./vue-storefront-api/docker/kibana/config/:/usr/share/kibana/config:ro
     ports:
-      - '5601:5601'
+      - "5601:5601"
     depends_on:
       - es1
   redis:
-    image: 'redis:4-alpine'
+    image: "redis:4-alpine"
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
 volumes:
   db-data:
