@@ -18,6 +18,13 @@ do
 
 done
 
+# checking for host map for magento
+if ! grep -q local.magento /etc/hosts; 
+  then
+    echo "Mapping local.magento to localhost..."
+    echo "127.0.0.1 local.magento" >> /etc/hosts
+fi
+
 # default configs
 cp ./vue-storefront/config/{default,local}.json
 
