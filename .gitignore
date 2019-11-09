@@ -1,4 +1,5 @@
 data/
+db-data/
 env
 vue-storefront/
 vue-storefront-api/
