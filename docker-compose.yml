@@ -11,24 +11,18 @@ services:
       - env
     volumes:
       - /dev/mytheme:/var/www/html/app/design/frontend/mytheme/default
-    networks:
-      - esnet
   db:
     image: mysql:5.7.28
     volumes:
       - db-data:/var/lib/mysql
     env_file:
       - env
-    networks:
-      - esnet
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     ports:
       - "8580:80"
     links:
       - db
-    networks:
-      - esnet
   storefront:
     build:
       context: ./vue-storefront
@@ -111,6 +105,3 @@ services:
 
 volumes:
   db-data:
-
-networks:
-  esnet:
