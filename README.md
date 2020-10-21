@@ -1,4 +1,4 @@
-# docker-vuestorefront-mangento2
+# docker-vuestorefront-magento2
 
 Magento 2, Kibana, vue-storefront and vue-storefront-api all in one convenient package!
 
